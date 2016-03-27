@@ -33,9 +33,9 @@ from math import sqrt
 case_dir = 'cases'
 control_dir = 'controls'
 proband_is_case = None
-target_p = 0.5
+alpha = 0.05
 
-optlist, args = getopt(sys.argv[1:], '-p', ['cases=', 'controls=', 'proband=', 'p=', 'help'])
+optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'help'])
 for name, value in optlist:
     if name == '--cases':
         case_dir = value
@@ -46,8 +46,8 @@ for name, value in optlist:
             proband_is_case = True
         elif value.lower() == 'control':
             proband_is_case = False
-    elif name in ('-p', '--p'):
-        target_p = float(value)
+    elif name in ('-a', '--alpha'):
+        alpha = float(value)
     elif name == '--help':
         print('Syntax: ./23andme-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--p=<value>]')
         print('cases defaults to ./cases, controls defaults to ./controls, and p defaults to 0.5.')
@@ -150,7 +150,7 @@ for chromosome, segments in linkage.items():
             se = sqrt(p * (1 - p) * (1 / cases + 1 / controls))
             z = (segment[2] / cases - segment[3] / controls) / se
             p = 1 - exp(-z**2 / 2) / sqrt(2 * pi)
-            if p <= target_p:
+            if p <= alpha:
                 if not difference_found:
                     print('Chromosome\tStart\tEnd\tCase freq\tControl freq\tp')
                     difference_found = True
