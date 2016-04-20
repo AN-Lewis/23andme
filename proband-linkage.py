@@ -26,9 +26,8 @@ import csv
 import glob
 import sys
 from getopt import getopt
-from math import exp
-from math import pi
 from math import sqrt
+from scipy.stats import norm
 
 case_dir = 'cases'
 control_dir = 'controls'
@@ -148,8 +147,8 @@ for chromosome, segments in linkage.items():
         try:
             p = (segment[2] + segment[3]) / (cases + controls)
             se = sqrt(p * (1 - p) * (1 / cases + 1 / controls))
-            z = (segment[2] / cases - segment[3] / controls) / se
-            p = 1 - exp(-z**2 / 2) / sqrt(2 * pi)
+            z = -abs((segment[2] / cases - segment[3] / controls) / se)
+            p = 2 * norm.cdf(z)
             if p <= alpha:
                 if not difference_found:
                     print('Chromosome\tStart\tEnd\tCase freq\tControl freq\tp')
