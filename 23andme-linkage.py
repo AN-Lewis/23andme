@@ -49,8 +49,8 @@ for name, value in optlist:
     elif name in ('-a', '--alpha'):
         alpha = float(value)
     elif name == '--help':
-        print('Syntax: ./23andme-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--p=<value>]')
-        print('cases defaults to ./cases, controls defaults to ./controls, and p defaults to 0.5.')
+        print('Syntax: ./23andme-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>]')
+        print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
         exit(1)
 
 while proband_is_case == None:
