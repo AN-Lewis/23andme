@@ -15,8 +15,8 @@ To use this program:
    directory.
 5. Repeat steps 1-4 until you have at least 10 cases and 10 controls. The more
    the better.
-6. Execute ./23andme-linkage.py. The program will ask you if you yourself are a
-   case or a control.
+6. Execute ./proband-linkage.py. The program will ask you if you, the proband,
+   are a case or a control.
 
 The program will output a tab-separated spreadsheet. If you are a case, the
 output should contain segments that members of the case group share with you
