@@ -132,7 +132,11 @@ def load_files(csv_dir, is_case):
 load_files(case_dir, True)
 load_files(control_dir, False)
 
-print('Comparing ' + str(cases) + ' cases to ' + str(controls) + ' controls.')
+m = 0
+for chromosome, segments in linkage.items():
+    m += len(segments)
+
+print('Comparing ' + str(m) + ' segments between ' + str(cases) + ' cases and ' + str(controls) + ' controls.')
 
 if cases < 10 or controls < 10:
     print('WARNING: You do not have enough cases and controls.')
