@@ -139,7 +139,7 @@ for chromosome, segments in linkage.items():
 print('Comparing ' + str(m) + ' segments between ' + str(cases) + ' cases and ' + str(controls) + ' controls.')
 
 if cases < 10 or controls < 10:
-    print('WARNING: You do not have enough cases and controls.')
+    print('WARNING: You have less than 10 cases or less than 10 controls.')
     print('The p values output by this program are not accurate.')
 
 difference_found = False
