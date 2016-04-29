@@ -144,7 +144,13 @@ if cases < 10 or controls < 10:
 
 difference_found = False
 
-for chromosome, segments in linkage.items():
+def pad_key(pair):
+    try:
+        return (str(int(pair[0])).zfill(2), pair[1])
+    except ValueError:
+        return pair
+
+for chromosome, segments in sorted(linkage.items(), key=pad_key):
     for segment in segments:
         if segment[0] == 0 or segment[1] == sys.maxsize:
             continue
