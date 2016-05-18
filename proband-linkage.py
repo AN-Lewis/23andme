@@ -33,8 +33,9 @@ case_dir = 'cases'
 control_dir = 'controls'
 proband_is_case = None
 alpha = 0.05
+m = 23
 
-optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'help'])
+optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'help'])
 for name, value in optlist:
     if name == '--cases':
         case_dir = value
@@ -47,8 +48,10 @@ for name, value in optlist:
             proband_is_case = False
     elif name in ('-a', '--alpha'):
         alpha = float(value)
+    elif name == '--no-bonferroni':
+        m = 1
     elif name == '--help':
-        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>]')
+        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>] [--no-bonferroni]')
         print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
         exit(1)
 
@@ -132,11 +135,11 @@ def load_files(csv_dir, is_case):
 load_files(case_dir, True)
 load_files(control_dir, False)
 
-m = 0
+total_segments = 0
 for chromosome, segments in linkage.items():
-    m += len(segments)
+    total_segments += len(segments)
 
-print('Comparing ' + str(m) + ' segments between ' + str(cases) + ' cases and ' + str(controls) + ' controls.')
+print('Comparing ' + str(total_segments) + ' segments between ' + str(cases) + ' cases and ' + str(controls) + ' controls.')
 
 if cases < 10 or controls < 10:
     print('WARNING: You have less than 10 cases or less than 10 controls.')
@@ -159,7 +162,7 @@ for chromosome, segments in sorted(linkage.items(), key=pad_key):
             se = sqrt(p * (1 - p) * (1 / cases + 1 / controls))
             z = -abs((segment[2] / cases - segment[3] / controls) / se)
             p = 2 * norm.cdf(z)
-            if p <= alpha:
+            if p <= alpha / m:
                 if not difference_found:
                     print('Chromosome\tStart\tEnd\tCase freq\tControl freq\tp')
                     difference_found = True
