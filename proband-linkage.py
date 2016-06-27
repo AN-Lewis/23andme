@@ -31,6 +31,7 @@ from math import sqrt
 from os.path import basename
 from os.path import splitext
 from scipy.stats import norm
+from sys import stderr
 
 case_dir = 'cases'
 control_dir = 'controls'
@@ -62,7 +63,8 @@ for name, value in optlist:
         exit(1)
 
 while proband_is_case == None:
-    proband_is_case = input('Is the proband a case or a control? ')
+    stderr.write('Is the proband a case or a control? ')
+    proband_is_case = input()
     if proband_is_case.lower() == 'case':
         proband_is_case = True
     elif proband_is_case.lower() == 'control':
@@ -150,11 +152,11 @@ total_segments = 0
 for chromosome, segments in linkage.items():
     total_segments += len(segments)
 
-print('Comparing ' + str(total_segments) + ' segments between ' + str(len(cases)) + ' cases and ' + str(len(controls)) + ' controls.')
+stderr.write('Comparing ' + str(total_segments) + ' segments between ' + str(len(cases)) + ' cases and ' + str(len(controls)) + ' controls.\n')
 
 if len(cases) < 10 or len(controls) < 10:
-    print('WARNING: You have less than 10 cases or less than 10 controls.')
-    print('The p values output by this program are not accurate.')
+    stderr.write('WARNING: You have less than 10 cases or less than 10 controls.\n')
+    stderr.write('The p values output by this program are not accurate.\n')
 
 difference_found = False
 
@@ -210,4 +212,4 @@ for chromosome, segments in sorted(linkage.items(), key=pad_key):
             pass
 
 if not difference_found:
-    print('There is no significant difference between the cases and the controls.')
+    stderr.write('There is no significant difference between the cases and the controls.\n')
