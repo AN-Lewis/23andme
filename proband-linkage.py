@@ -38,9 +38,9 @@ control_dir = 'controls'
 proband_is_case = None
 alpha = 0.05
 m = 23
-want_misfits = True
+want_misfits = False
 
-optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'no-misfit-names', 'help'])
+optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'misfits', 'help'])
 for name, value in optlist:
     if name == '--cases':
         case_dir = value
@@ -55,8 +55,8 @@ for name, value in optlist:
         alpha = float(value)
     elif name == '--no-bonferroni':
         m = 1
-    elif name == '--no-misfit-names':
-        want_misfits = False
+    elif name == '--misfits':
+        want_misfits = True
     elif name == '--help':
         print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>] [--no-bonferroni] [--no-misfit-names]')
         print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
