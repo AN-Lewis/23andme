@@ -58,7 +58,7 @@ for name, value in optlist:
     elif name == '--misfits':
         want_misfits = True
     elif name == '--help':
-        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>] [--no-bonferroni] [--no-misfit-names]')
+        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>] [--no-bonferroni] [--misfits]')
         print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
         exit(1)
 
