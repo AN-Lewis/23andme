@@ -35,17 +35,23 @@ from sys import stderr
 
 case_dir = 'cases'
 control_dir = 'controls'
+recursive = False
 proband_is_case = None
 alpha = 0.05
 m = 23
 want_misfits = False
 
-optlist, args = getopt(sys.argv[1:], '-a', ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'misfits', 'help'])
+optlist, args = getopt(
+    sys.argv[1:], '-ar',
+    ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'misfits', 'help']
+)
 for name, value in optlist:
     if name == '--cases':
         case_dir = value
     elif name == '--controls':
         control_dir = value
+    elif name == '-r':
+        recursive = True
     elif name == '--proband':
         if value.lower() == 'case':
             proband_is_case = True
@@ -58,7 +64,9 @@ for name, value in optlist:
     elif name == '--misfits':
         want_misfits = True
     elif name == '--help':
-        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>] [--proband=(case|control)] [--alpha=<value>] [--no-bonferroni] [--misfits]')
+        print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>]')
+        print('                [-r | --recursive] [--proband=(case|control)]')
+        print('                [-a <value> | --alpha=<value>] [--no-bonferroni] [--misfits]')
         print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
         exit(1)
 
@@ -124,7 +132,9 @@ linkage = {
 def load_files(csv_dir, is_case):
     global cases
     global controls
-    for filename in glob.glob(csv_dir + '/*.csv'):
+    for filename in glob.glob(csv_dir + '/**', recursive=recursive):
+        if not filename.endswith('.csv'):
+            continue
         person_name = splitext(basename(filename))[0]
         for row in csv.reader(open(filename, 'r')):
             if row == ['Comparison', 'Chromosome', 'Start Point', 'End Point', 'Genetic Distance', '#SNPs']:
