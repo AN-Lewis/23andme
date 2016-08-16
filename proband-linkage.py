@@ -43,14 +43,14 @@ want_misfits = False
 
 optlist, args = getopt(
     sys.argv[1:], '-ar',
-    ['cases=', 'controls=', 'proband=', 'alpha=', 'no-bonferroni', 'misfits', 'help']
+    ['cases=', 'controls=', 'proband=', 'alpha=', 'recursive', 'no-bonferroni', 'misfits', 'help']
 )
 for name, value in optlist:
     if name == '--cases':
         case_dir = value
     elif name == '--controls':
         control_dir = value
-    elif name == '-r':
+    elif name in ('-r', --recursive):
         recursive = True
     elif name == '--proband':
         if value.lower() == 'case':
@@ -68,7 +68,7 @@ for name, value in optlist:
         print('                [-r | --recursive] [--proband=(case|control)]')
         print('                [-a <value> | --alpha=<value>] [--no-bonferroni] [--misfits]')
         print('cases defaults to ./cases, controls defaults to ./controls, and alpha defaults to 0.05.')
-        exit(1)
+        exit()
 
 while proband_is_case == None:
     stderr.write('Is the proband a case or a control? ')
