@@ -1,4 +1,4 @@
-## 23andMe raw data to MAP file converter
+## 23andMe raw data to PLINK file converter
 
 This program takes as input one or more 23andMe raw data files and outputs a
 single [PED file](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map) and
@@ -9,9 +9,11 @@ tools.
 
 To use this program:
 
-1. Download raw data files from 23andMe, unzip them, and put them in the cases,
+1. Execute `./get-hapmap.sh` to download HapMap Phase II data from NCBI. If you
+   skip this step, any generated map file will not have genetic distances.
+2. Download raw data files from 23andMe, unzip them, and put them in the cases,
    controls, and unknowns directories.
-2. Execute `./raw-to-plink`.
+3. Execute `./raw-to-plink`.
 
 ## License
 
