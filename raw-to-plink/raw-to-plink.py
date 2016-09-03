@@ -11,12 +11,13 @@ from os.path import splitext
 case_dir = 'cases'
 control_dir = 'controls'
 unknown_dir = 'unknowns'
-family_id = 'FAM001'
 recursive = False
+family_id = 'FAM001'
+out_dir = '.'
 
 optlist, args = getopt(
     sys.argv[1:], '-ar',
-    ['cases=', 'controls=', 'unknowns=', 'recursive', 'family', 'help']
+    ['cases=', 'controls=', 'unknowns=', 'recursive', 'family=', 'out=', 'help']
 )
 for name, value in optlist:
     if name == '--cases':
@@ -29,11 +30,14 @@ for name, value in optlist:
         recursive = True
     elif name == '--family':
         family_id = value;
+    elif name == '--out':
+        out_dir = value
     elif name == '--help':
         print('Syntax: ./raw-to-plink.py [--cases=<dir>] [--controls=<dir>] [--unknowns=<dir>]')
-        print('                [--family=<name>] [-r | --recursive]')
+        print('                [-r | --recursive] [--family=<name>] [--out=<dir>]')
         print('cases defaults to ./cases, controls defaults to ./controls, unknowns defaults')
-        print('to ./unknowns, and family defaults to FAM001.')
+        print('to ./unknowns, family defaults to FAM001, and out defaults to the current')
+        print('directory.')
         exit()
 
 print('Loading HapMap...')
@@ -216,7 +220,7 @@ for person_id in raw_data:
 
 print('Writing files...')
 
-ped_file = open(family_id + '.ped', 'w')
+ped_file = open(out_dir + '/' + family_id + '.ped', 'w')
 for proband_id in raw_data:
     father_id = '0'
     mother_id = '0'
@@ -253,7 +257,7 @@ for proband_id in raw_data:
         ped_file.write('\t' + bases[0] + ' ' + bases[1])
     ped_file.write('\n')
 
-map_file = open(family_id + '.map', 'w')
+map_file = open(out_dir + '/' + family_id + '.map', 'w')
 map_file.write('# chromosome\trsid\tmorgans\tposition\n')
 for rsid in snp_map:
     map_file.write(snp_map[rsid][0] + '\t' + rsid + '\t' + str(snp_map[rsid][2] / 100) + '\t' + str(snp_map[rsid][1]) + '\n')
