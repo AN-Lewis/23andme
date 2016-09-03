@@ -35,10 +35,14 @@ from scipy.stats import fisher_exact
 from scipy.stats.contingency import expected_freq
 from sys import stderr
 
+CASE = 2
+CONTROL = 1
+UNKNOWN = 0
+
 case_dir = 'cases'
 control_dir = 'controls'
 recursive = False
-proband_is_case = None
+proband_affection = None
 alpha = 0.05
 m = 23
 method = 'auto'
@@ -58,9 +62,11 @@ for name, value in optlist:
         recursive = True
     elif name == '--proband':
         if value.lower() == 'case':
-            proband_is_case = True
+            proband_affection = CASE
         elif value.lower() == 'control':
-            proband_is_case = False
+            proband_affection = CONTROL
+        elif value.lower() == 'unknown':
+            proband_affection = UNKNOWN
     elif name in ('-a', '--alpha'):
         alpha = float(value)
     elif name == '--no-bonferroni':
@@ -73,22 +79,24 @@ for name, value in optlist:
         want_misfits = True
     elif name == '--help':
         print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>]')
-        print('                [-r | --recursive] [--proband=(case|control)]')
+        print('                [-r | --recursive] [--proband=(case|control|unknown)]')
         print('                [-a <value> | --alpha=<value>] [--no-bonferroni]')
         print('                [--method=(chi|fisher|auto)] [--no-yates] [--misfits]')
         print('cases defaults to ./cases, controls defaults to ./controls, alpha defaults to')
         print('0.05, and method defaults to auto.')
         exit()
 
-while proband_is_case == None:
-    stderr.write('Is the proband a case or a control? ')
-    proband_is_case = input()
-    if proband_is_case.lower() == 'case':
-        proband_is_case = True
-    elif proband_is_case.lower() == 'control':
-        proband_is_case = False
+while proband_affection == None:
+    stderr.write('Is the proband a case, a control, or an unknown? ')
+    proband_affection = input()
+    if proband_affection.lower() == 'case':
+        proband_affection = CASE
+    elif proband_affection.lower() == 'control':
+        proband_affection = CONTROL
+    elif proband_affection.lower() == 'unknown':
+        proband_affection = UNKNOWN
     else:
-        proband_is_case = None
+        proband_affection = None
 
 def create_start_point(segments, point):
     for i in range(0, len(segments)):
@@ -106,12 +114,15 @@ def create_end_point(segments, point):
             segments[i + 1][0] = point + 1
             break
 
-if proband_is_case:
+if proband_affection == CASE:
     cases = ['Proband']
     controls = []
-else:
+elif proband_affection == CONTROL:
     cases = []
     controls = ['Proband']
+else:
+    cases = []
+    controls = []
 
 linkage = {
      '1': [[0, sys.maxsize, copy(cases), copy(controls)]],
