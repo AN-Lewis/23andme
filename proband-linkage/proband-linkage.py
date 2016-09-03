@@ -217,7 +217,7 @@ for chromosome, segments in sorted(linkage.items(), key=pad_key):
                 expected_frequency_table = expected_freq(contingency_table)
                 num_large_cells = 0
                 num_small_cells = 0
-                for row in contingency_table:
+                for row in expected_frequency_table:
                     for cell in row:
                         if cell >= 5:
                             num_large_cells += 1
