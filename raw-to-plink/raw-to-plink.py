@@ -71,13 +71,13 @@ for chromosome in list(map(str, range(1, 23))) + ['X']:
 print('Loading 23andMe raw data files...')
 
 raw_data = OrderedDict()
-affections = {}
+affection_table = {}
 snp_map = OrderedDict()
 
 def load_files(txt_dir, affection):
     for filename in sorted(glob(txt_dir + '/**', recursive=recursive)):
         person_id = re.sub('\W', '', splitext(basename(filename))[0])
-        affections[person_id] = affection
+        affection_table[person_id] = affection
 
         for line in open(filename, 'r'):
             if line.startswith('#'):
@@ -263,7 +263,7 @@ for proband_id in raw_data:
         father_id + '\t' +
         mother_id + '\t' +
         sex + '\t' +
-        affections[proband_id]
+        affection_table[proband_id]
     )
     for rsid in snp_map:
         chromosome = snp_map[rsid][0]
