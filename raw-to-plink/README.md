@@ -10,12 +10,32 @@ tools.
 To use this program:
 
 1. Execute `./get-hapmap.sh` to download HapMap Phase II data from NCBI. If you
-   skip this step, any generated map file will not have genetic distances.
+   skip this step, the generated map file will not have genetic distances.
 2. Download raw data files from 23andMe, unzip them, and put them in the cases,
-   controls, and unknowns directories.
+   controls, and unknowns directories. Each file *must* have a `.txt` extension.
 3. Execute `./raw-to-plink`.
 
-## License
+### Options
+* `--cases`
+    * The directory that contains the raw data files of the cases.
+    * Defaults to `./cases`.
+* `--controls`
+    * The directory that contains the raw data files of the controls.
+    * Defaults to `./controls`.
+* `--unknowns`
+    * The directory that contains the raw data files of the unknowns.
+    * Defaults to `./unknowns`.
+* `-r`, `--recursive`
+    * Search the case and control directories recursively.
+* `--family`
+    * The family ID to put in the generated PED file, and the base filename of
+      the generated PED and MAP files.
+    * Defaults to `FAM001`.
+* `--out`
+    * The directory to create the PED and MAP files in.
+    * Defaults to the current directory.
+
+### License
 
 Copyright (c) 2016 Alex Henrie
 

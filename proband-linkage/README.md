@@ -12,7 +12,7 @@ To use this program:
    ancestry report with you.
 3. Copy and paste the tabular data into your favorite spreadsheet program.
 4. Save the spreadsheet as a CSV in either the cases directory or the controls
-   directory.
+   directory. The file *must* have a `.csv` extension.
 5. Repeat steps 1-4 until you have at least 10 cases and 10 controls. The more
    the better.
 6. Install [SciPy](https://www.scipy.org/) by running `sudo pip install scipy`.
@@ -28,7 +28,51 @@ with you significantly less often than members of the control group.
 While this program can tell you where a clinically significant variant is
 located in the genome, it cannot tell you what exactly the variant is.
 
-## License
+### Options
+
+* `--cases`
+    * The directory that contains the linkage files of the cases.
+    * Defaults to `./cases`.
+* `--controls`
+    * The directory that contains the linkage files of the controls.
+    * Defaults to `./controls`.
+* `-r`, `--recursive`
+    * Search the case and control directories recursively.
+* `--proband`
+    * Set this to `case` if the proband is a case, `control` if the proband is a
+      control, and `unknown` otherwise.
+    * The script will prompt for this value if it is not provided on the command
+      line.
+* `-a`, `--alpha`
+    * Exclude results with p-values less than this value.
+    * Defaults to 0.05.
+    * Pass `--alpha=1 --no-bonferroni` to see all results.
+* `--no-bonferroni`
+    * Do not divide alpha by 23 (the number of human chromosomes and therefore
+      the number of independent/unlinked comparisons) to compensate for the
+      [multiple comparison problem](https://en.wikipedia.org/wiki/Multiple_comparisons_problem)
+      (a [Bonferroni correction](https://en.wikipedia.org/wiki/Bonferroni_correction)).
+* `--method`
+    * Set this to `chi` to compute p-values by
+      [chi-squared test](https://en.wikipedia.org/wiki/Chi-squared_test),
+      `fisher` for
+      [Fisher exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test),
+      and `auto` to use Fisher as long as it does not reduce the power. `auto`
+      will choose Fisher if at least 3 cells in the 4-cell contingency table
+      have expected values greater than or equal to 5 and no cell has an
+      expected value less than 1, otherwise it will choose chi-squared.
+    * Defaults to `auto`.
+* `--no-yates`
+    * If using the chi-squared test, do not apply the
+      [Yates continuity correction](https://en.wikipedia.org/wiki/Yates%27s_correction_for_continuity).
+      The Yates continuity correction increases the p value, and in theory does
+      not reduce the power.
+    * Pass `--method=chi --no-yates` for a simple z test of two proportions.
+* `--misfits`
+    * For each segment in the results, print the base filename of each file that
+      did not fit its "case" or "control" category.
+
+### License
 
 Copyright (c) 2016 Alex Henrie
 
