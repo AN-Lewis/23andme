@@ -31,6 +31,11 @@ To use this program:
     * The family ID to put in the generated PED file, and the base filename of
       the generated PED and MAP files.
     * Defaults to `FAM001`.
+* `--no-parents`
+    * Set all parents to 0 in the PED file; do not attempt to infer them.
+* `--no-sexes`
+    * Set all sexes to 0 in the PED file; do not attempt to infer them.
+    * Implies `--no-parents`.
 * `--out`
     * The directory to create the PED and MAP files in.
     * Defaults to the current directory.
