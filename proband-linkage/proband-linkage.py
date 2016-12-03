@@ -30,6 +30,7 @@ from getopt import getopt
 from math import sqrt
 from os.path import basename
 from os.path import splitext
+from random import randint
 from scipy.stats import chi2_contingency
 from scipy.stats import fisher_exact
 from scipy.stats import power_divergence
@@ -49,10 +50,24 @@ m = 23
 method = 'auto'
 yates = True
 want_misfits = False
+randomize = False
 
 optlist, args = getopt(
-    sys.argv[1:], '-ar',
-    ['cases=', 'controls=', 'proband=', 'alpha=', 'recursive', 'no-bonferroni', 'method=', 'no-yates', 'misfits', 'help']
+    sys.argv[1:],
+    '-ar',
+    [
+        'cases=',
+        'controls=',
+        'proband=',
+        'alpha=',
+        'recursive',
+        'no-bonferroni',
+        'method=',
+        'no-yates',
+        'misfits',
+        'randomize',
+        'help',
+    ]
 )
 for name, value in optlist:
     if name == '--cases':
@@ -78,16 +93,22 @@ for name, value in optlist:
         yates = False
     elif name == '--misfits':
         want_misfits = True
+    elif name == '--randomize':
+        randomize = True
     elif name == '--help':
         print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>]')
         print('                [-r | --recursive] [--proband=(case|control|unknown)]')
         print('                [-a <value> | --alpha=<value>] [--no-bonferroni]')
         print('                [--method=(chi|fisher|g|auto)] [--no-yates] [--misfits]')
+        print('                [--randomize]')
         print('cases defaults to ./cases, controls defaults to ./controls, alpha defaults to')
         print('0.05, and method defaults to auto.')
         exit()
 
 while proband_affection == None:
+    if randomize:
+        proband_affection = randint(CONTROL, CASE)
+        break
     stderr.write('Is the proband a case, a control, or an unknown? ')
     proband_affection = input()
     if proband_affection.lower() == 'case':
@@ -157,6 +178,8 @@ def load_files(csv_dir, is_case):
     for filename in glob.glob(csv_dir + '/**', recursive=recursive):
         if not filename.endswith('.csv'):
             continue
+        if randomize:
+            is_case = randint(0, 1)
         person_name = splitext(basename(filename))[0]
         for row in csv.reader(open(filename, 'r')):
             if row == ['Comparison', 'Chromosome', 'Start Point', 'End Point', 'Genetic Distance', '#SNPs']:

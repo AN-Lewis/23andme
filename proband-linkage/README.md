@@ -72,6 +72,14 @@ located in the genome, it cannot tell you what exactly the variant is.
 * `--misfits`
     * For each segment in the results, print the base filename of each file that
       did not fit its "case" or "control" category.
+* `--randomize`
+    * Ignore the folder structure and randomly assign each file to the case or
+      control group. If the proband's affection is not specified with the
+      `--proband=` option, the proband is also randomly assigned to the case or
+      control group. This will give you an empirical impression of the false
+      positive rate.
+* `--help`
+    * Print a synopsis of the available options.
 
 ### License
 
