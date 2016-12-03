@@ -58,7 +58,7 @@ for name, value in optlist:
         case_dir = value
     elif name == '--controls':
         control_dir = value
-    elif name in ('-r', --recursive):
+    elif name in ('-r', '--recursive'):
         recursive = True
     elif name == '--proband':
         if value.lower() == 'case':
