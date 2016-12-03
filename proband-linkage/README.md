@@ -57,6 +57,7 @@ located in the genome, it cannot tell you what exactly the variant is.
       [chi-squared test](https://en.wikipedia.org/wiki/Chi-squared_test),
       `fisher` for
       [Fisher exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test),
+      `g` for the [G-test](https://en.wikipedia.org/wiki/G-test),
       and `auto` to use Fisher as long as it does not reduce the power. `auto`
       will choose Fisher if at least 3 cells in the 4-cell contingency table
       have expected values greater than or equal to 5 and no cell has an

@@ -32,6 +32,7 @@ from os.path import basename
 from os.path import splitext
 from scipy.stats import chi2_contingency
 from scipy.stats import fisher_exact
+from scipy.stats import power_divergence
 from scipy.stats.contingency import expected_freq
 from sys import stderr
 
@@ -81,7 +82,7 @@ for name, value in optlist:
         print('Syntax: ./proband-linkage.py [--cases=<dir>] [--controls=<dir>]')
         print('                [-r | --recursive] [--proband=(case|control|unknown)]')
         print('                [-a <value> | --alpha=<value>] [--no-bonferroni]')
-        print('                [--method=(chi|fisher|auto)] [--no-yates] [--misfits]')
+        print('                [--method=(chi|fisher|g|auto)] [--no-yates] [--misfits]')
         print('cases defaults to ./cases, controls defaults to ./controls, alpha defaults to')
         print('0.05, and method defaults to auto.')
         exit()
@@ -213,6 +214,14 @@ for chromosome, segments in sorted(linkage.items(), key=pad_key):
             elif method == 'fisher':
                 p = fisher_exact(contingency_table)[1]
                 method_name = 'Fisher'
+            elif method == 'g':
+                p = power_divergence(
+                    contingency_table[0] + contingency_table[1],
+                    f_exp=expected_freq(contingency_table).ravel(),
+                    ddof=2,
+                    lambda_='log-likelihood'
+                )[1]
+                method_name = 'G-test'
             else:
                 expected_frequency_table = expected_freq(contingency_table)
                 num_large_cells = 0
