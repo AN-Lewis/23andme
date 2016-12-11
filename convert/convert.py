@@ -40,7 +40,7 @@ for name, value in optlist:
     elif name == '--out':
         out_dir = value
     elif name == '--help':
-        print('Syntax: ./raw-to-plink.py [--cases=<dir>] [--controls=<dir>] [--unknowns=<dir>]')
+        print('Syntax: ./convert.py [--cases=<dir>] [--controls=<dir>] [--unknowns=<dir>]')
         print('                [-r | --recursive] [--family=<name>] [--no-parents]')
         print('                [--no-sexes] [--out=<dir>]')
         print('cases defaults to ./cases, controls defaults to ./controls, unknowns defaults')
@@ -268,12 +268,20 @@ for proband_id in raw_data:
     for rsid in snp_map:
         chromosome = snp_map[rsid][0]
         bases = raw_data[proband_id][chromosome][rsid]
-        if '\n' in bases[0] or '\n' in bases[1]:
-            print(rsid)
         ped_file.write('\t' + bases[0] + ' ' + bases[1])
     ped_file.write('\n')
 
-map_file = open(out_dir + '/' + family_id + '.map', 'w')
-map_file.write('# chromosome\trsid\tmorgans\tposition\n')
+plink_map_file = open(out_dir + '/' + family_id + '.plink.map', 'w')
+plink_map_file.write('# chromosome\trsid\tmorgans\tposition\n')
 for rsid in snp_map:
-    map_file.write(snp_map[rsid][0] + '\t' + rsid + '\t' + str(snp_map[rsid][2] / 100) + '\t' + str(snp_map[rsid][1]) + '\n')
+    plink_map_file.write(snp_map[rsid][0] + '\t' + rsid + '\t' + str(snp_map[rsid][2] / 100) + '\t' + str(snp_map[rsid][1]) + '\n')
+
+merlin_map_file = open(out_dir + '/' + family_id + '.merlin.map', 'w')
+merlin_map_file.write('CHROMOSOME\tMARKER_NAME\tPOSITION\n')
+for rsid in snp_map:
+    merlin_map_file.write(snp_map[rsid][0] + '\t' + rsid + '\t' + str(snp_map[rsid][2]) + '\n')
+
+merlin_dat_file = open(out_dir + '/' + family_id + '.merlin.dat', 'w')
+merlin_dat_file.write('A  affection\n')
+for rsid in snp_map:
+    merlin_dat_file.write('M  ' + rsid + '\n')

@@ -1,10 +1,14 @@
 ## 23andMe raw data to PLINK file converter
 
-This program takes as input one or more 23andMe raw data files and outputs a
-single [PED file](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map) and
-a single [MAP file](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map).
+This program takes as input one or more 23andMe raw data files and outputs:
+* A [PLINK PED](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map) /
+  [MERLIN PED](https://csg.sph.umich.edu/abecasis/Merlin/tour/input_files.html#relate) file
+* A [PLINK MAP file](http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map).
+* A [MERLIN MAP file](https://csg.sph.umich.edu/abecasis/Merlin/tour/input_files.html#mapfile)
+* A [MERLIN DAT file](https://csg.sph.umich.edu/abecasis/Merlin/tour/input_files.html#pedfile)
 These files can in turn be used with
-[PLINK](http://pngu.mgh.harvard.edu/~purcell/plink/) or other bioinformatics
+[PLINK](http://pngu.mgh.harvard.edu/~purcell/plink/),
+[MERLIN](https://csg.sph.umich.edu/abecasis/Merlin/), and other bioinformatics
 tools.
 
 To use this program:
@@ -13,7 +17,7 @@ To use this program:
    skip this step, the generated map file will not have genetic distances.
 2. Download raw data files from 23andMe, unzip them, and put them in the cases,
    controls, and unknowns directories. Each file *must* have a `.txt` extension.
-3. Execute `./raw-to-plink`.
+3. Execute `./convert.py`.
 
 ### Options
 * `--cases`

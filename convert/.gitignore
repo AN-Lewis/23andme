@@ -1,0 +1,7 @@
+*.dat
+*.map
+*.ped
+.pversion
+merlin.*
+plink.*
+hapmap/
