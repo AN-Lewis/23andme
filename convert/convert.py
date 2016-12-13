@@ -8,6 +8,9 @@ from glob import glob
 from os.path import basename
 from os.path import splitext
 
+MALE = '1'
+FEMALE = '2'
+
 case_dir = 'cases'
 control_dir = 'controls'
 unknown_dir = 'unknowns'
@@ -125,6 +128,23 @@ load_files(case_dir, '2')
 load_files(control_dir, '1')
 load_files(unknown_dir, '0')
 
+sex_table = {}
+
+if want_sexes:
+    print('Inferring sexes...')
+
+    for person_id in raw_data:
+        male_snps = 0
+        for rsid in raw_data[person_id]['Y']:
+            if raw_data[person_id]['Y'][rsid] != ('0', '0'):
+                male_snps += 1
+        if male_snps / len(raw_data[person_id]['Y']) > 0.1:
+            sex_table[person_id] = MALE
+        else:
+            sex_table[person_id] = FEMALE
+
+parents_table = {}
+
 if want_parents:
     print('Inferring relationships...')
 
@@ -211,30 +231,9 @@ if want_parents:
 
     #print(relationship_table)
 
-if want_sexes:
-    print('Inferring sexes...')
-
-    MALE = '1'
-    FEMALE = '2'
-
-    sex_table = {}
-    for person_id in raw_data:
-        male_snps = 0
-        for rsid in raw_data[person_id]['Y']:
-            if raw_data[person_id]['Y'][rsid] != ('0', '0'):
-                male_snps += 1
-        if male_snps / len(raw_data[person_id]['Y']) > 0.1:
-            sex_table[person_id] = MALE
-        else:
-            sex_table[person_id] = FEMALE
-
-print('Writing files...')
-
-ped_file = open(out_dir + '/' + family_id + '.ped', 'w')
-for proband_id in raw_data:
-    father_id = '0'
-    mother_id = '0'
-    if want_parents:
+    for proband_id in list(raw_data.keys()):
+        father_id = '0'
+        mother_id = '0'
         for potential_parent_id in relationship_table[proband_id]:
             if relationship_table[proband_id][potential_parent_id] != PARENT_OR_CHILD:
                 continue
@@ -251,6 +250,41 @@ for proband_id in raw_data:
                         break
             if mother_id != '0' and father_id != '0':
                 break
+
+        if father_id == '0' and mother_id != '0':
+            missing_parent_id = mother_id + 'Spouse'
+            missing_parent_sex = MALE
+            father_id = missing_parent_id
+        elif mother_id == '0' and father_id != '0':
+            missing_parent_id = father_id + 'Spouse'
+            missing_parent_sex = FEMALE
+            mother_id = missing_parent_id
+        else:
+            missing_parent_id = None
+
+        parents_table[proband_id] = (father_id, mother_id)
+
+        if missing_parent_id and missing_parent_id not in raw_data:
+            affection_table[missing_parent_id] = '0'
+            raw_data[missing_parent_id] = {}
+            for rsid in snp_map:
+                chromosome = snp_map[rsid][0]
+                if chromosome not in raw_data[missing_parent_id]:
+                    raw_data[missing_parent_id][chromosome] = {}
+                raw_data[missing_parent_id][chromosome][rsid] = ('0', '0')
+            sex_table[missing_parent_id] = missing_parent_sex
+            parents_table[missing_parent_id] = ('0', '0')
+
+print('Writing files...')
+
+ped_file = open(out_dir + '/' + family_id + '.ped', 'w')
+for proband_id in raw_data:
+    if want_parents:
+        father_id = parents_table[proband_id][0]
+        mother_id = parents_table[proband_id][1]
+    else:
+        father_id = '0'
+        mother_id = '0'
 
     if want_sexes:
         sex = sex_table[proband_id]
