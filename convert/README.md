@@ -40,6 +40,11 @@ To use this program:
 * `--no-sexes`
     * Set all sexes to 0 in the PED file; do not attempt to infer them.
     * Implies `--no-parents`.
+* `--spacing`
+    * The minimum genetic distance, in centimorgans, between markers in the
+      output. Use this option to thin the data if it is too big for your linkage
+      analysis program.
+    * Defaults to `0`.
 * `--out`
     * The directory to create the PED and MAP files in.
     * Defaults to the current directory.

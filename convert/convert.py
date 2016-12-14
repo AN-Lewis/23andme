@@ -16,13 +16,14 @@ control_dir = 'controls'
 unknown_dir = 'unknowns'
 recursive = False
 family_id = 'FAM001'
+spacing = 0
 out_dir = '.'
 want_parents = True
 want_sexes = True
 
 optlist, args = getopt(
     sys.argv[1:], '-ar',
-    ['cases=', 'controls=', 'unknowns=', 'recursive', 'family=', 'no-parents', 'no-sexes', 'out=', 'help']
+    ['cases=', 'controls=', 'unknowns=', 'recursive', 'family=', 'no-parents', 'no-sexes', 'spacing=', 'out=', 'help']
 )
 for name, value in optlist:
     if name == '--cases':
@@ -42,10 +43,12 @@ for name, value in optlist:
         want_parents = False
     elif name == '--out':
         out_dir = value
+    elif name == '--spacing':
+        spacing = float(value)
     elif name == '--help':
         print('Syntax: ./convert.py [--cases=<dir>] [--controls=<dir>] [--unknowns=<dir>]')
         print('                [-r | --recursive] [--family=<name>] [--no-parents]')
-        print('                [--no-sexes] [--out=<dir>]')
+        print('                [--no-sexes] [--spacing=<cm>] [--out=<dir>]')
         print('cases defaults to ./cases, controls defaults to ./controls, unknowns defaults')
         print('to ./unknowns, family defaults to FAM001, and out defaults to the current')
         print('directory.')
@@ -274,6 +277,24 @@ if want_parents:
                 raw_data[missing_parent_id][chromosome][rsid] = ('0', '0')
             sex_table[missing_parent_id] = missing_parent_sex
             parents_table[missing_parent_id] = ('0', '0')
+
+if spacing > 0:
+    print('Thinning the data...')
+
+    new_snp_map = OrderedDict()
+    prev_chromosome = None
+    next_cm_pos = 0
+
+    for rsid in snp_map:
+        if snp_map[rsid][0] != prev_chromosome:
+            next_cm_pos = 0
+            prev_chromosome = snp_map[rsid][0]
+
+        if snp_map[rsid][2] >= next_cm_pos:
+            new_snp_map[rsid] = snp_map[rsid]
+            next_cm_pos += spacing
+
+    snp_map = new_snp_map
 
 print('Writing files...')
 
