@@ -5,6 +5,7 @@ import sys
 from collections import OrderedDict
 from getopt import getopt
 from glob import glob
+from math import inf
 from os.path import basename
 from os.path import splitext
 
@@ -17,13 +18,30 @@ unknown_dir = 'unknowns'
 recursive = False
 family_id = 'FAM001'
 spacing = 0
+chromosome_of_interest = None
+start_pos = 0
+end_pos = inf
 out_dir = '.'
 want_parents = True
 want_sexes = True
 
 optlist, args = getopt(
     sys.argv[1:], '-ar',
-    ['cases=', 'controls=', 'unknowns=', 'recursive', 'family=', 'no-parents', 'no-sexes', 'spacing=', 'out=', 'help']
+    [
+        'cases=',
+        'controls=',
+        'unknowns=',
+        'recursive',
+        'family=',
+        'no-parents',
+        'no-sexes',
+        'spacing=',
+        'chr=',
+        'start=',
+        'end=',
+        'out=',
+        'help',
+    ]
 )
 for name, value in optlist:
     if name == '--cases':
@@ -45,10 +63,17 @@ for name, value in optlist:
         out_dir = value
     elif name == '--spacing':
         spacing = float(value)
+    elif name == '--chr':
+        chromosome_of_interest = value
+    elif name == '--start':
+        start_pos = float(value)
+    elif name == '--end':
+        end_pos = float(value)
     elif name == '--help':
         print('Syntax: ./convert.py [--cases=<dir>] [--controls=<dir>] [--unknowns=<dir>]')
         print('                [-r | --recursive] [--family=<name>] [--no-parents]')
-        print('                [--no-sexes] [--spacing=<cm>] [--out=<dir>]')
+        print('                [--no-sexes] [--spacing=<cm>] [--chr=<chr>] [--start=<cm>]')
+        print('                [--end=<cm>] [--out=<dir>]')
         print('cases defaults to ./cases, controls defaults to ./controls, unknowns defaults')
         print('to ./unknowns, family defaults to FAM001, and out defaults to the current')
         print('directory.')
@@ -278,7 +303,7 @@ if want_parents:
             sex_table[missing_parent_id] = missing_parent_sex
             parents_table[missing_parent_id] = ('0', '0')
 
-if spacing > 0:
+if spacing > 0 or chromosome_of_interest or start_pos > 0 or end_pos < inf:
     print('Thinning the data...')
 
     new_snp_map = OrderedDict()
@@ -286,6 +311,10 @@ if spacing > 0:
     next_cm_pos = 0
 
     for rsid in snp_map:
+        if (chromosome_of_interest and (snp_map[rsid][0] != chromosome_of_interest or
+                snp_map[rsid][2] < start_pos or snp_map[rsid][2] > end_pos)):
+            continue
+
         if snp_map[rsid][0] != prev_chromosome:
             next_cm_pos = 0
             prev_chromosome = snp_map[rsid][0]

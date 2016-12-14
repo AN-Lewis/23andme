@@ -45,6 +45,17 @@ To use this program:
       output. Use this option to thin the data if it is too big for your linkage
       analysis program.
     * Defaults to `0`.
+* `--chr`
+    * Output markers from only one particular chromosome.
+    * Disabled by default.
+* `--start`
+    * The minimum genetic distance between the start of the chromosome and the
+      first marker to output.
+    * Defaults to `0`.
+* `--end`
+    * The maximum genetic distance between the start of the chromosome and the
+      last marker to output.
+    * Defaults to infinity.
 * `--out`
     * The directory to create the PED and MAP files in.
     * Defaults to the current directory.
