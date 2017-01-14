@@ -196,6 +196,8 @@ if want_parents:
                     last_cm_pos = 0
                     sorted_snps = sorted(raw_data[person1_id][chromosome], key=lambda rsid: snp_map[rsid][2])
                     for rsid in sorted_snps:
+                        if rsid not in raw_data[person2_id][chromosome]:
+                            continue
                         person1_base1 = raw_data[person1_id][chromosome][rsid][0]
                         person1_base2 = raw_data[person1_id][chromosome][rsid][1]
                         person2_base1 = raw_data[person2_id][chromosome][rsid][0]
@@ -351,7 +353,10 @@ for proband_id in raw_data:
     )
     for rsid in snp_map:
         chromosome = snp_map[rsid][0]
-        bases = raw_data[proband_id][chromosome][rsid]
+        if rsid in raw_data[proband_id][chromosome]:
+            bases = raw_data[proband_id][chromosome][rsid]
+        else:
+            bases = ('0', '0')
         ped_file.write('\t' + bases[0] + ' ' + bases[1])
     ped_file.write('\n')
 
