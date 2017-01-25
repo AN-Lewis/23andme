@@ -85,9 +85,8 @@ hap_map = {}
 
 for chromosome in list(map(str, range(1, 23))) + ['X']:
     try:
-        f = open('hapmap/genetic_map_GRCh37_chr' + chromosome + '.txt')
         hap_map[chromosome] = [(0, 0)]
-        for line in f:
+        for line in open('hapmap/genetic_map_GRCh37_chr' + chromosome + '.txt'):
             if line.startswith('Chromosome'):
                 continue
 

@@ -62,7 +62,7 @@ To use this program:
 
 ### License
 
-Copyright (c) 2016 Alex Henrie
+Copyright (c) 2017 Alex Henrie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
